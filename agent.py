@@ -10,28 +10,28 @@ from create_Keys import create_key
 class Agent:
     def __init__(self, name, debug=True):
         self.name = name
-        self.url = "http://localhost:8000/"
+        #self.url = "http://localhost:8000/"
 
-        # self.url = "http://localhost:1337/"
+        self.url = "http://localhost:1337/"
         #self.url = "https://pamastmarkt.azurewebsites.net/"
 
         # Init paths
         self.filepath = os.path.dirname(os.path.abspath(__file__))
-        self.public_key_path = self.filepath + "/public.pem"
-        self.private_key_path = self.filepath + "/private.pem"
-
+        self.public_key_path = self.filepath + "\public.pem"
+        self.private_key_path = self.filepath + "\private.pem"
         self.json_parser = JSON_Parser()
 
         # Init public and private key
         if not (os.path.exists(self.public_key_path) and 
-           os.path.getsize(self.public_key_path) > 0 and 
-           os.path.exists(self.private_key_path) and 
-           os.path.getsize(self.private_key_path) > 0):
-  
+            os.path.getsize(self.public_key_path) > 0 and 
+            os.path.exists(self.private_key_path) and 
+            os.path.getsize(self.private_key_path) > 0):
             create_key()
+            print("Keys being created")
 
         with open(self.public_key_path, "rb") as key_file:
-            self.__public_key = serialization.load_pem_public_key(key_file.read())
+            pubkey = key_file.read()
+            self.__public_key = serialization.load_pem_public_key(pubkey)
 
         with open(self.private_key_path, "rb") as key_file:
             self.__private_key = serialization.load_pem_private_key(
