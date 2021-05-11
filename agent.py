@@ -12,8 +12,8 @@ class Agent:
         self.name = name
         #self.url = "http://localhost:8000/"
 
-        self.url = "http://localhost:1337/"
-        #self.url = "https://pamastmarkt.azurewebsites.net/"
+        #self.url = "http://localhost:1337/"
+        self.url = "https://pamastmarkt.azurewebsites.net/"
 
         # Init paths
         self.filepath = os.path.dirname(os.path.abspath(__file__))

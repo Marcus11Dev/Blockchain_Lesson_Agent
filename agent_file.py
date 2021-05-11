@@ -1,6 +1,6 @@
 from agent import Agent
 
-agent = Agent(name = 'Agent2', debug=True)
+agent = Agent(name = 'Agent3', debug=True)
 
 print("======================================== Ausgabe: Aktuelle Übersicht ========================================")
 print("Aktuelle Bilanz:")
