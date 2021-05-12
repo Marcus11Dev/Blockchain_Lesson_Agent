@@ -47,8 +47,8 @@ class Agent:
     def print_chain(self, pretty=True):
         self.node.print_chain(pretty=pretty)
 
-    def print_balance(self):
-        self.node.print_balance()
+    def print_balance(self, all=False):
+        self.node.print_balance(all=all)
     
     def print_quotes(self, product):
         self.node.print_quotes(product = product)
