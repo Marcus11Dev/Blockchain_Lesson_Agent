@@ -10,8 +10,7 @@ from create_Keys import create_key
 class Agent:
     def __init__(self, name, debug=True):
         self.name = name
-        #self.url = "http://localhost:8000/"
-
+        
         #self.url = "http://localhost:1337/"
         self.url = "https://pamastmarkt.azurewebsites.net/"
 
@@ -47,8 +46,8 @@ class Agent:
     def print_chain(self, pretty=True):
         self.node.print_chain(pretty=pretty)
 
-    def print_balance(self):
-        self.node.print_balance()
+    def print_balance(self, all=False):
+        self.node.print_balance(all=all)
     
     def print_quotes(self, product):
         self.node.print_quotes(product = product)
