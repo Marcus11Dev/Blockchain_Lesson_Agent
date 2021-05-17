@@ -11,11 +11,12 @@ class Agent:
     def __init__(self, name, debug=True):
         self.name = name
         
-        #self.url = "http://localhost:1337/"
+        # self.url = "http://localhost:1337/"
         self.url = "https://pamastmarkt.azurewebsites.net/"
 
         # Init paths
         self.filepath = os.path.dirname(os.path.abspath(__file__))
+        self.backup_path = self.filepath + "/backup.txt"
         self.public_key_path = self.filepath + "\public.pem"
         self.private_key_path = self.filepath + "\private.pem"
         self.json_parser = JSON_Parser()
@@ -40,6 +41,9 @@ class Agent:
 
         self.node = Node(name = name, private_key = self.__private_key, public_key = self.__public_key)
 
+        # Init from Backup
+        self.read_backup()
+
         self.registration(debug=debug)
 
 
@@ -51,6 +55,12 @@ class Agent:
     
     def print_quotes(self, product):
         self.node.print_quotes(product = product)
+
+    def get_balance(self, all=False):
+        return self.node.get_balance(all=all)
+    
+    def get_quotes(self, product):
+        return self.node.get_quotes(product = product)
 
     def registration(self, debug=True):
         try:
@@ -134,6 +144,9 @@ class Agent:
         response_msg = self.json_parser.parse_dump_to_message(json_response_msg)
 
         self.node.handle_incoming_message(response_msg)
+
+        # Update Backup
+        self.write_backup()
     
     def quote(self, quote_list=[], debug=True): 
         try:
@@ -269,3 +282,27 @@ class Agent:
 
         return {'Status': False, 'Response': None}
 
+    def write_backup(self):
+        # Check Text-File already Exists and isn't empty
+        if os.path.exists(self.backup_path) and os.path.getsize(self.backup_path) > 0:
+            os.remove(self.backup_path)
+
+        json_obj = {
+            "Name":        self.name,
+            "Blockchain":  self.json_parser.parse_chain_to_dump(self.node.blockchain.chain)
+        }
+
+        with open(self.backup_path, "w") as f:
+            json.dump(json_obj,f)
+
+    def read_backup(self):
+        # Check Text-File already Exists and isn't empty
+        if os.path.exists(self.backup_path) and os.path.getsize(self.backup_path) > 0:
+            with open(self.backup_path, "r") as f:
+                json_obj = json.loads(f.read())
+
+                self.name = json_obj["Name"]
+                self.node.blockchain.chain = self.json_parser.parse_dump_to_chain(json_obj["Blockchain"])
+            return True
+        else:
+            return False
