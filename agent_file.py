@@ -123,11 +123,6 @@ agent.print_balance()
 print("Current Lufthansa quotes owned:")
 agent.print_quotes('Lufthansa')
 
-# Print current (local) blockchain
-print("Current blockchain:")
-agent.print_chain()
-print("\n")
-
 # =====================================================
 # Sell 1 Lufthansa quote
 # =====================================================
@@ -149,10 +144,6 @@ agent.print_balance()
 print("Current Lufthansa quotes owned:")
 agent.print_quotes('Lufthansa')
 
-# Print current (local) blockchain
-print("Current blockchain:")
-agent.print_chain()
-print("\n")
 
 # =====================================================
 # Buy (too much)
@@ -175,10 +166,6 @@ agent.print_balance()
 print("Current Lufthansa quotes owned:")
 agent.print_quotes('Lufthansa')
 
-# Print current (local) blockchain
-print("Current blockchain:")
-agent.print_chain()
-print("\n")
 
 # =====================================================
 # Sell (too much)
@@ -200,6 +187,10 @@ agent.print_balance()
 # Print current Lufthansa quotes owned
 print("Current Lufthansa quotes owned:")
 agent.print_quotes('Lufthansa')
+
+
+
+# =====================================================
 
 # Print current (local) blockchain
 print("Current blockchain:")
