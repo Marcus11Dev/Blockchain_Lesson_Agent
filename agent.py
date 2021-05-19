@@ -41,6 +41,9 @@ class Agent:
 
         self.node = Node(name = name, private_key = self.__private_key, public_key = self.__public_key)
 
+        # Init from Backup
+        #self.read_backup()
+
         self.registration(debug=debug)
 
 
