@@ -1,3 +1,4 @@
+from TeamCloud_Modul.Blockchain import Transaction
 import requests
 import json
 import os
@@ -189,7 +190,8 @@ class Agent:
 
             # Check Quote Call was successfully
             if response_quote["Status"] == True:
-                if self.node.check_transaction_validity(self.name, 'Cloud', product, quantity, response_quote["Response"][product]):
+                transaction = Transaction(self.name,'Cloud',product,quantity,response_quote["Response"][product]*quantity,signature='0')
+                if self.node.check_transaction_validity(transaction):
                     payload = {"product": product, "quantity": quantity}
                     signature = self.node.create_signature(payload)
                     payload.update({'signature':signature})
@@ -239,7 +241,8 @@ class Agent:
 
             # Check Quote Call was successfully
             if response_quote["Status"] == True:
-                if self.node.check_transaction_validity('Cloud', self.name, product, quantity, response_quote["Response"][product]):
+                transaction = Transaction('Cloud',self.name,product,quantity,response_quote["Response"][product]*quantity,signature='0')
+                if self.node.check_transaction_validity(transaction):
                     payload = {"product": product, "quantity": quantity}
                     signature = self.node.create_signature(payload)
                     payload.update({'signature':signature})
