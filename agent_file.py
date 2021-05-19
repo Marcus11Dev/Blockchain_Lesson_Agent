@@ -92,6 +92,7 @@ if response_quote["Status"] == True:
     print(response_quote["Response"])
 else:
     print("Error occurred")
+print("\n")
 
 # Get "Lufthansa" quote
 response_quote = agent.quote(["Lufthansa"], debug=True)
@@ -123,11 +124,6 @@ agent.print_balance()
 print("Current Lufthansa quotes owned:")
 agent.print_quotes('Lufthansa')
 
-# Print current (local) blockchain
-print("Current blockchain:")
-agent.print_chain()
-print("\n")
-
 # =====================================================
 # Sell 1 Lufthansa quote
 # =====================================================
@@ -148,11 +144,6 @@ agent.print_balance()
 # Print current Lufthansa quotes owned
 print("Current Lufthansa quotes owned:")
 agent.print_quotes('Lufthansa')
-
-# Print current (local) blockchain
-print("Current blockchain:")
-agent.print_chain()
-print("\n")
 
 # =====================================================
 # Buy (too much)
@@ -175,11 +166,6 @@ agent.print_balance()
 print("Current Lufthansa quotes owned:")
 agent.print_quotes('Lufthansa')
 
-# Print current (local) blockchain
-print("Current blockchain:")
-agent.print_chain()
-print("\n")
-
 # =====================================================
 # Sell (too much)
 # =====================================================
@@ -200,6 +186,11 @@ agent.print_balance()
 # Print current Lufthansa quotes owned
 print("Current Lufthansa quotes owned:")
 agent.print_quotes('Lufthansa')
+
+# =====================================================
+# Blockchain
+# =====================================================
+printHeader("Blockchain")
 
 # Print current (local) blockchain
 print("Current blockchain:")

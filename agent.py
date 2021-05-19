@@ -301,8 +301,10 @@ class Agent:
             with open(self.backup_path, "r") as f:
                 json_obj = json.loads(f.read())
 
-                self.name = json_obj["Name"]
-                self.node.blockchain.chain = self.json_parser.parse_dump_to_chain(json_obj["Blockchain"])
+                if self.name == json_obj["Name"]:
+                    self.node.blockchain.chain = self.json_parser.parse_dump_to_chain(json_obj["Blockchain"])
+                    self.node.create_user_public_key_map()
+
             return True
         else:
             return False
