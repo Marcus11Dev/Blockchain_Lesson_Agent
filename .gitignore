@@ -139,5 +139,4 @@ dmypy.json
 
 # local keys
 *.pem
-
 *backup.txt
