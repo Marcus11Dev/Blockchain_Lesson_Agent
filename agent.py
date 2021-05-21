@@ -4,8 +4,9 @@ import json
 import os
 
 from TeamCloud_Modul.Node import Node
-from TeamCloud_Modul.json_parser import Message, JSON_Parser, get_checksum, Block, Blockchain
-from cryptography.hazmat.primitives import serialization  
+from TeamCloud_Modul.json_parser import Message, JSON_Parser, get_checksum
+from cryptography.hazmat.primitives import serialization
+from requests.api import request  
 from create_Keys import create_key
 
 class Agent:
@@ -98,6 +99,30 @@ class Agent:
             if debug==True: print('[Error] Error occured. Registration call failed.')
             if debug==True: print(e)
 
+
+    def send_cloud_missing_blocks(self):
+        last_cloud_hash = self._get_last_cloud_hash()
+        for idx, block in enumerate(self.node.blockchain.chain):
+            if block.hash == last_cloud_hash:
+                break
+
+        payload = self.json_parser.parse_chain_to_dump(self.node.blockchain.chain[idx+1:])
+
+        request_msg = Message(sender=self.name,
+                        receiver='receiver',
+                        parser_type='type_default',
+                        message_type='block_msg',
+                        payload=payload,
+                        checksum=get_checksum(payload))
+        
+        json_message = self.json_parser.parse_message_to_dump(request_msg) 
+        json_response_msg = requests.put(url=self.url + "/CloudInitialization/",json=json_message).json()
+        return json_response_msg
+    
+    def _get_last_cloud_hash(self):
+        json_response_msg = requests.get(url=self.url + "/CloudInitialization/").json()
+        return json_response_msg
+    
     def __sync_blockchain(self):
         ############################################# Get Header Message #############################################
 
@@ -151,6 +176,7 @@ class Agent:
     
     def quote(self, quote_list=[], debug=True): 
         try:
+            self.send_cloud_missing_blocks()
             payload = {"quote_list": quote_list}
 
             # Built Message
@@ -190,44 +216,40 @@ class Agent:
 
             # Check Quote Call was successfully
             if response_quote["Status"] == True:
-                transaction = Transaction(self.name,'Cloud',product,quantity,response_quote["Response"][product]*quantity,signature='0')
-                if self.node.check_transaction_validity(transaction):
-                    payload = {"product": product, "quantity": quantity}
-                    signature = self.node.create_signature(payload)
-                    payload.update({'signature':signature})
+                payload = {"product": product, "quantity": quantity}
+                signature = self.node.create_signature(payload)
+                payload.update({'signature':signature})
 
-                    # Built Message
-                    request_msg = Message(sender=self.name,receiver='Cloud',parser_type='type_default', message_type='default', payload=payload,checksum='checksum')
+                # Built Message
+                request_msg = Message(sender=self.name,receiver='Cloud',parser_type='type_default', message_type='default', payload=payload,checksum='checksum')
 
-                    # Parse Message to JSON
-                    json_request_msg = self.json_parser.parse_message_to_dump(request_msg)
+                # Parse Message to JSON
+                json_request_msg = self.json_parser.parse_message_to_dump(request_msg)
 
-                    # Request
-                    json_response_msg = requests.post(url=self.url + "/Buy/", json=json_request_msg).json()
+                # Request
+                json_response_msg = requests.post(url=self.url + "/Buy/", json=json_request_msg).json()
 
-                    # Parse JSON to Message
-                    response_msg = self.json_parser.parse_dump_to_message(json_response_msg)
+                # Parse JSON to Message
+                response_msg = self.json_parser.parse_dump_to_message(json_response_msg)
 
-                    info_handler={
-                        0:'[Info] Transaction successfully.',
-                        1:'[Warning] Buy Call failed caused by Quote.',
-                        2:'[Warning] Buy Call failed. Validity check failed.',
-                        3:'[Error] Signature comparison faced an issue.',
-                        4:'[Error] Buy Call failed. Syntax Error.',
-                    }
-                    if debug==True: print(info_handler.get(response_msg.payload['status'],"Error occured"))
+                info_handler={
+                    0:'[Info] Transaction successfully.',
+                    1:'[Warning] Buy Call failed caused by Quote.',
+                    2:'[Warning] Buy Call failed. Validity check failed.',
+                    3:'[Error] Signature comparison faced an issue.',
+                    4:'[Error] Buy Call failed. Syntax Error.',
+                }
+                if debug==True: print(info_handler.get(response_msg.payload['status'],"Error occured"))
 
-                    if response_msg.payload['status'] == 0: 
-                        # Sync Blockchain
-                        self.__sync_blockchain()
+                if response_msg.payload['status'] == 0: 
+                    # Sync Blockchain
+                    self.__sync_blockchain()
 
-                        return {'Status': True, 'Response': None}
-                else:
-                   if debug==True: print("[Warning] Buy Call failed. Validity check failed.")
-                   return {'Status': False, 'Response': None} 
+                    return {'Status': True, 'Response': None}
             else:
-                if debug==True: print("[Warning] Buy Call failed caused by Quote.")
-                return {'Status': False, 'Response': None}
+                if debug==True: print("[Warning] Buy Call failed. Validity check failed.")
+                return {'Status': False, 'Response': None} 
+
         except Exception as e:
             if debug==True: print('[Error] Error occured. Buy call failed.')
             if debug==True: print(e)
@@ -241,44 +263,40 @@ class Agent:
 
             # Check Quote Call was successfully
             if response_quote["Status"] == True:
-                transaction = Transaction('Cloud',self.name,product,quantity,response_quote["Response"][product]*quantity,signature='0')
-                if self.node.check_transaction_validity(transaction):
-                    payload = {"product": product, "quantity": quantity}
-                    signature = self.node.create_signature(payload)
-                    payload.update({'signature':signature})
+                payload = {"product": product, "quantity": quantity}
+                signature = self.node.create_signature(payload)
+                payload.update({'signature':signature})
 
-                    # Built Message
-                    request_msg = Message(sender=self.name,receiver='Cloud',parser_type='type_default', message_type='default', payload=payload,checksum='checksum')
+                # Built Message
+                request_msg = Message(sender=self.name,receiver='Cloud',parser_type='type_default', message_type='default', payload=payload,checksum='checksum')
 
-                    # Parse Message to JSON
-                    json_request_msg = self.json_parser.parse_message_to_dump(request_msg)
+                # Parse Message to JSON
+                json_request_msg = self.json_parser.parse_message_to_dump(request_msg)
 
-                    # Request
-                    json_response_msg = requests.post(url=self.url + "/Sell/", json=json_request_msg).json()
+                # Request
+                json_response_msg = requests.post(url=self.url + "/Sell/", json=json_request_msg).json()
 
-                    # Parse JSON to Message
-                    response_msg = self.json_parser.parse_dump_to_message(json_response_msg)
+                # Parse JSON to Message
+                response_msg = self.json_parser.parse_dump_to_message(json_response_msg)
 
-                    info_handler={
-                        0:'[Info] Transaction successfully.',
-                        1:'[Warning] Sell Call failed caused by Quote.',
-                        2:'[Warning] Sell Call failed. Validity check failed.',
-                        3:'[Error] Signature comparison faced an issue.',
-                        4:'[Error] Sell Call failed. Syntax Error.',
-                    }
-                    if debug==True: print(info_handler.get(response_msg.payload['status'],"Error occured"))
+                info_handler={
+                    0:'[Info] Transaction successfully.',
+                    1:'[Warning] Sell Call failed caused by Quote.',
+                    2:'[Warning] Sell Call failed. Validity check failed.',
+                    3:'[Error] Signature comparison faced an issue.',
+                    4:'[Error] Sell Call failed. Syntax Error.',
+                }
+                if debug==True: print(info_handler.get(response_msg.payload['status'],"Error occured"))
 
-                    if response_msg.payload['status'] == 0: 
-                        # Sync Blockchain
-                        self.__sync_blockchain()
+                if response_msg.payload['status'] == 0: 
+                    # Sync Blockchain
+                    self.__sync_blockchain()
 
-                        return {'Status': True, 'Response': None}
-                else:
-                   if debug==True: print("[Warning] Sell Call failed. Validity check failed.")
-                   return {'Status': False, 'Response': None} 
+                    return {'Status': True, 'Response': None}
             else:
-                if debug==True: print("[Warning] Sell Call failed caused by Quote.")
-                return {'Status': False, 'Response': None}
+                if debug==True: print("[Warning] Sell Call failed. Validity check failed.")
+                return {'Status': False, 'Response': None} 
+
         except Exception as e:
             if debug==True: print('[Error] Error occured. Sell call failed.')
             if debug==True: print(e)
@@ -296,7 +314,7 @@ class Agent:
         }
 
         with open(self.backup_path, "w") as f:
-            json.dump(json_obj,f)
+            json.dump(json_obj,f,indent=4)
 
     def read_backup(self):
         # Check Text-File already Exists and isn't empty
