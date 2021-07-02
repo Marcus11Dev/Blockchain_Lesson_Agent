@@ -139,3 +139,5 @@ dmypy.json
 
 # local keys
 *.pem
+*backup.txt
+debug_agent_file.py

@@ -22,7 +22,24 @@ quotes_list = ["Amazon",
                 "Daimler",
                 "Siemens Energy", 
                 "Honeywell", 
-                "Cisco"]
+                "Cisco",
+                "1&1",
+                "SMA",
+                "Volkswagen",
+                "Airbus",
+                "Allianz",
+                "Coca-Cola",
+                "IBM",
+                "NIKE",
+                "Intel",
+                "ATVI",
+                "Netflix",
+                "Googel",
+                "Dogecoin",
+                "Ethereum",
+                "Infineon",
+                "GameStop",
+                "Boeing"]
 
 # =====================================================
 # Show user overview
@@ -30,19 +47,32 @@ quotes_list = ["Amazon",
 printHeader("User overview")
 
 # Print current balance users
-print("Current balance users:")
+print("[Print] Current balance users:")
 agent.print_balance(all=True)
 print("\n")
 
 # Print current balance
-print("Current balance:")
+print("[Print] Current balance:")
 agent.print_balance()
 print("\n")
 
+# Get current balance
+print("[GET] Current balance:")
+response_balance = agent.get_balance(all=False)
+print(response_balance)
+print("\n")
+
 # Print current quotes owned
-print("Current quotes owned:")
+print("[Print] Current quotes owned:")
 for quote in quotes_list:
     agent.print_quotes(quote)
+print("\n")
+
+# Get current quotes owned
+print("[GET] Current quotes owned:")
+for quote in quotes_list:
+    response_quotes = agent.get_quotes(quote)
+    print(response_quotes)
 print("\n")
 
 # Print current (local) blockchain
@@ -62,6 +92,7 @@ if response_quote["Status"] == True:
     print(response_quote["Response"])
 else:
     print("Error occurred")
+print("\n")
 
 # Get "Lufthansa" quote
 response_quote = agent.quote(["Lufthansa"], debug=True)
@@ -93,11 +124,6 @@ agent.print_balance()
 print("Current Lufthansa quotes owned:")
 agent.print_quotes('Lufthansa')
 
-# Print current (local) blockchain
-# print("Current blockchain:")
-# agent.print_chain()
-# print("\n")
-
 # =====================================================
 # Sell 1 Lufthansa quote
 # =====================================================
@@ -118,11 +144,6 @@ agent.print_balance()
 # Print current Lufthansa quotes owned
 print("Current Lufthansa quotes owned:")
 agent.print_quotes('Lufthansa')
-
-# Print current (local) blockchain
-# print("Current blockchain:")
-# agent.print_chain()
-# print("\n")
 
 # =====================================================
 # Buy (too much)
@@ -145,11 +166,6 @@ agent.print_balance()
 print("Current Lufthansa quotes owned:")
 agent.print_quotes('Lufthansa')
 
-# # Print current (local) blockchain
-# print("Current blockchain:")
-# agent.print_chain()
-# print("\n")
-
 # =====================================================
 # Sell (too much)
 # =====================================================
@@ -170,6 +186,11 @@ agent.print_balance()
 # Print current Lufthansa quotes owned
 print("Current Lufthansa quotes owned:")
 agent.print_quotes('Lufthansa')
+
+# =====================================================
+# Blockchain
+# =====================================================
+printHeader("Blockchain")
 
 # Print current (local) blockchain
 print("Current blockchain:")
