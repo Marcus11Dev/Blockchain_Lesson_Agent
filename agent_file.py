@@ -8,6 +8,8 @@ def printHeader(header):
 # Konstruktor 
 # Create instance of Agent-Class
 agent = Agent(name = 'muma1234', debug=True)
+response_quote = agent.quote(quote_list=[], debug=True)
+
 
 # Declaration available quotes
 quotes_list = ["Amazon",
@@ -39,7 +41,8 @@ quotes_list = ["Amazon",
                 "Ethereum",
                 "Infineon",
                 "GameStop",
-                "Boeing"]
+                "Boeing"
+                ]
 
 # =====================================================
 # Show user overview

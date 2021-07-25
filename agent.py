@@ -13,8 +13,8 @@ class Agent:
     def __init__(self, name, debug=True):
         self.name = name
         
-        self.url = "http://localhost:1337/"
-        #self.url = "https://pamastmarkt.azurewebsites.net/"
+        #self.url = "http://localhost:1337/"
+        self.url = "https://mastpamarkt.azurewebsites.net/"
 
         # Init paths
         self.filepath = os.path.dirname(os.path.abspath(__file__))
