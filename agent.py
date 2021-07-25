@@ -13,7 +13,6 @@ class Agent:
     def __init__(self, name, debug=True):
         self.name = name
         
-        #self.url = "http://localhost:1337/"
         self.url = "https://mastpamarkt.azurewebsites.net/"
 
         # Init paths
@@ -322,9 +321,8 @@ class Agent:
             with open(self.backup_path, "r") as f:
                 json_obj = json.loads(f.read())
 
-                if self.name == json_obj["Name"]:
-                    self.node.blockchain.chain = self.json_parser.parse_dump_to_chain(json_obj["Blockchain"])
-                    self.node.create_user_public_key_map()
+                self.node.blockchain.chain = self.json_parser.parse_dump_to_chain(json_obj["Blockchain"])
+                self.node.create_user_public_key_map()
 
             return True
         else:

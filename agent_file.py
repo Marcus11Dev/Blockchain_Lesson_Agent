@@ -10,7 +10,6 @@ def printHeader(header):
 agent = Agent(name = 'muma1234', debug=True)
 response_quote = agent.quote(quote_list=[], debug=True)
 
-
 # Declaration available quotes
 quotes_list = ["Amazon",
                 "Apple", 
