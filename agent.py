@@ -18,8 +18,8 @@ class Agent:
         # Init paths
         self.filepath = os.path.dirname(os.path.abspath(__file__))
         self.backup_path = self.filepath + "/backup.txt"
-        self.public_key_path = self.filepath + "\public.pem"
-        self.private_key_path = self.filepath + "\private.pem"
+        self.public_key_path = self.filepath + "/public.pem"
+        self.private_key_path = self.filepath + "/private.pem"
         self.json_parser = JSON_Parser()
 
         # Init public and private key
